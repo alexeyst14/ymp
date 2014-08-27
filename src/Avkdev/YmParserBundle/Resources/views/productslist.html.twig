@@ -1,0 +1,18 @@
+<table class="products tablesorter">
+    <thead>
+    <tr>
+        <th>&nbsp;</th>
+        <th>Название</th>
+        <th>Описание</th>
+        <th>Цена</th>
+    </tr>
+    </thead>
+    {% for entity in products %}
+        <tr class="{{ cycle(['even', 'odd'], loop.index) }}">
+            <td><a href="{{ entity.urlOriginal }}" target="_blank"><img src="{{ entity.urlPhoto }}" width="100"/></a></td>
+            <td><a href="{{ entity.urlOriginal }}" target="_blank">{{ entity.name }}</a></td>
+            <td>{{ entity.descr }}</td>
+            <td>{{ entity.retail }} {{ entity.currency }}</td>
+        </tr>
+    {% endfor %}
+</table>

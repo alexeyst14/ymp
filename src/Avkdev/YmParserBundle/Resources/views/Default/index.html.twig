@@ -1,0 +1,18 @@
+{% extends "AvkdevYmParserBundle::layout.html.twig" %}
+
+{% block title %}Товары с яндекс-маркета{% endblock %}
+
+{% block body %}
+    {{ include ('AvkdevYmParserBundle::productslist.html.twig', {'products': products}) }}
+{% endblock %}
+
+
+{% block sidebar %}
+    Боковая навигация
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script type="text/javascript" src="{{ asset('bundles/avkdevymparser/js/jquery.tablesorter.min.js') }}"></script>
+    <script type="text/javascript" src="{{ asset('bundles/avkdevymparser/js/main.js') }}"></script>
+{% endblock %}

@@ -1,0 +1,32 @@
+Avkdev\YmParserBundle\Entity\Product:
+    type: entity
+    table: product
+    repositoryClass: Avkdev\YmParserBundle\Entity\ProductRepository
+    id:
+        id:
+            type: integer
+            id: true
+            generator:
+                strategy: AUTO
+    fields:
+        name:
+            type: string
+            length: 255
+        retail:
+            type: decimal
+            precision: 10
+            scale: 2
+        currency:
+            type: string
+            length: 3
+        descr:
+            type: text
+        urlOriginal:
+            type: string
+            length: 255
+            column: url_original
+        urlPhoto:
+            type: string
+            length: 255
+            column: url_photo
+    lifecycleCallbacks: {  }

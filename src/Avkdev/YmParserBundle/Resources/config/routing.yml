@@ -1,0 +1,3 @@
+avkdev_ym_parser_homepage:
+    path:     /
+    defaults: { _controller: AvkdevYmParserBundle:Default:index }

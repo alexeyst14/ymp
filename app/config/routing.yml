@@ -1,0 +1,4 @@
+avkdev_ym_parser:
+    resource: "@AvkdevYmParserBundle/Resources/config/routing.yml"
+    prefix:   /
+

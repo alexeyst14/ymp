@@ -1,0 +1,7 @@
+parameters:
+#    avkdev_ym_parser.example.class: Avkdev\YmParserBundle\Example
+
+services:
+#    avkdev_ym_parser.example:
+#        class: %avkdev_ym_parser.example.class%
+#        arguments: [@service_id, "plain_value", %parameter%]
