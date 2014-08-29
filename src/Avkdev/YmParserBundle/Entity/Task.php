@@ -295,4 +295,9 @@ class Task
     {
         return self::getStatusList()[$this->getStatus()];
     }
+
+    public function __toString()
+    {
+        return '#' . $this->getId()  . ' | ' . $this->getCategory()->getName();
+    }
 }

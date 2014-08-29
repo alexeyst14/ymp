@@ -16,6 +16,7 @@ class TaskType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
 
+
         $builder
             ->add(
                 'category',
@@ -28,7 +29,7 @@ class TaskType extends AbstractType
                     'required' => true,
                 )
             );
-        $builder->add('runDate');
+        $builder->add('runDate', null, array('data' => new \DateTime()));
 //        $builder->add('isRepeat', 'checkbox', array(
 //                'required' => false
 //            ));

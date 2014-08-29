@@ -5,3 +5,16 @@ services:
 #    avkdev_ym_parser.example:
 #        class: %avkdev_ym_parser.example.class%
 #        arguments: [@service_id, "plain_value", %parameter%]
+
+services:
+    avkdev_ym_parser.task_repository:
+        class: Doctrine\ORM\EntityRepository
+        factory_service: doctrine.orm.entity_manager
+        factory_method: getRepository
+        arguments:
+            - Avkdev\YmParserBundle\Entity\Task
+
+    avkdev_ym_parser.ymparser:
+        class: Avkdev\YmParserBundle\Parser\YandexMarket
+        calls:
+            - [ setContainer,[ @service_container ] ]
