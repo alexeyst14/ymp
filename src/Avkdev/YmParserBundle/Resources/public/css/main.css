@@ -66,3 +66,20 @@ table.tablesorter .headerSortDown {
     background-image: url(../img/desc.png);
     background-repeat: no-repeat;
 }
+
+
+
+table.records_list, .record_properties {
+    border-collapse: collapse;
+}
+table.records_list th, .record_properties th {
+    border: solid 1px #F48A00;
+    padding: 5px;
+    vertical-align: top;
+    font-weight: bold;
+}
+table.records_list td, .record_properties td {
+    border: solid 1px #F48A00;
+    padding: 5px;
+    vertical-align: top;
+}

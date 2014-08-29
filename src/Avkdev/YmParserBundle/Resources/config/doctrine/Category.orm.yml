@@ -1,0 +1,22 @@
+Avkdev\YmParserBundle\Entity\Category:
+    type: entity
+    table: category
+    repositoryClass: Avkdev\YmParserBundle\Entity\CategoryRepository
+    id:
+        id:
+            type: integer
+            id: true
+            generator:
+                strategy: AUTO
+    fields:
+        yandex_cat_id:
+            type: integer
+            unique: true
+        name:
+            type: string
+            length: 255
+    oneToMany:
+        products:
+            targetEntity: Product
+            mappedBy: category
+    lifecycleCallbacks: {  }

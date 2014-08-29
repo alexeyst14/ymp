@@ -1,3 +1,7 @@
 avkdev_ym_parser_homepage:
     path:     /
     defaults: { _controller: AvkdevYmParserBundle:Default:index }
+
+AvkdevYmParserBundle_task:
+    resource: "@AvkdevYmParserBundle/Resources/config/routing/task.yml"
+    prefix:   /task

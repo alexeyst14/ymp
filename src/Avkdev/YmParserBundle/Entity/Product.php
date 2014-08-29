@@ -15,6 +15,16 @@ class Product
     private $id;
 
     /**
+     * @var integer
+     */
+    private $categoryId;
+
+    /**
+     * @var integer
+     */
+    private $yandexModelId;
+
+    /**
      * @var string
      */
     private $name;
@@ -25,7 +35,7 @@ class Product
     private $retail;
 
     /**
-     * @var integer
+     * @var string
      */
     private $currency;
 
@@ -44,6 +54,11 @@ class Product
      */
     private $urlPhoto;
 
+    /**
+     * @var \Avkdev\YmParserBundle\Entity\Category
+     */
+    private $category;
+
 
     /**
      * Get id
@@ -53,6 +68,52 @@ class Product
     public function getId()
     {
         return $this->id;
+    }
+
+    /**
+     * Set categoryId
+     *
+     * @param integer $categoryId
+     * @return Product
+     */
+    public function setCategoryId($categoryId)
+    {
+        $this->categoryId = $categoryId;
+
+        return $this;
+    }
+
+    /**
+     * Get categoryId
+     *
+     * @return integer 
+     */
+    public function getCategoryId()
+    {
+        return $this->categoryId;
+    }
+
+    /**
+     * Set yandexModelId
+     *
+     * @param integer $yandexModelId
+     * @return Product
+     */
+    public function setYandexModelId($yandexModelId)
+    {
+        $this->yandexModelId = $yandexModelId;
+
+        return $this;
+    }
+
+    /**
+     * Get yandexModelId
+     *
+     * @return integer 
+     */
+    public function getYandexModelId()
+    {
+        return $this->yandexModelId;
     }
 
     /**
@@ -104,7 +165,7 @@ class Product
     /**
      * Set currency
      *
-     * @param integer $currency
+     * @param string $currency
      * @return Product
      */
     public function setCurrency($currency)
@@ -117,7 +178,7 @@ class Product
     /**
      * Get currency
      *
-     * @return integer 
+     * @return string 
      */
     public function getCurrency()
     {
@@ -191,5 +252,28 @@ class Product
     public function getUrlPhoto()
     {
         return $this->urlPhoto;
+    }
+
+    /**
+     * Set category
+     *
+     * @param \Avkdev\YmParserBundle\Entity\Category $category
+     * @return Product
+     */
+    public function setCategory(\Avkdev\YmParserBundle\Entity\Category $category = null)
+    {
+        $this->category = $category;
+
+        return $this;
+    }
+
+    /**
+     * Get category
+     *
+     * @return \Avkdev\YmParserBundle\Entity\Category 
+     */
+    public function getCategory()
+    {
+        return $this->category;
     }
 }

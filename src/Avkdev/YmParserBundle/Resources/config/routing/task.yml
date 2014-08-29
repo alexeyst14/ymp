@@ -1,0 +1,30 @@
+task:
+    path:     /
+    defaults: { _controller: "AvkdevYmParserBundle:Task:index" }
+
+task_show:
+    path:     /{id}/show
+    defaults: { _controller: "AvkdevYmParserBundle:Task:show" }
+
+task_new:
+    path:     /new
+    defaults: { _controller: "AvkdevYmParserBundle:Task:new" }
+
+task_create:
+    path:     /create
+    defaults: { _controller: "AvkdevYmParserBundle:Task:create" }
+    requirements: { _method: post }
+
+task_edit:
+    path:     /{id}/edit
+    defaults: { _controller: "AvkdevYmParserBundle:Task:edit" }
+
+task_update:
+    path:     /{id}/update
+    defaults: { _controller: "AvkdevYmParserBundle:Task:update" }
+    requirements: { _method: post|put }
+
+task_delete:
+    path:     /{id}/delete
+    defaults: { _controller: "AvkdevYmParserBundle:Task:delete" }
+    requirements: { _method: post|delete }

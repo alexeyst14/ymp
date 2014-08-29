@@ -1,0 +1,16 @@
+{% extends "AvkdevYmParserBundle::layout.html.twig" %}
+
+{% block body -%}
+    <h1>Task creation</h1>
+
+    {{ form(form) }}
+
+
+        <ul class="record_actions">
+    <li>
+        <a href="{{ path('task') }}">
+            Назад к списку
+        </a>
+    </li>
+</ul>
+{% endblock %}

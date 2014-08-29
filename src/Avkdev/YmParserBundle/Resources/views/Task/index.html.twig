@@ -1,0 +1,49 @@
+{% extends "AvkdevYmParserBundle::layout.html.twig" %}
+
+{% block body -%}
+    <h1>Задачи для парсинга</h1>
+
+    <table class="records_list">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Категория</th>
+                <th>Дата создания</th>
+                <th>Время запуска</th>
+                <th>Статус</th>
+                <th>Тех. информация</th>
+                <th>Действия</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for entity in entities %}
+            <tr>
+                <td><a href="{{ path('task_show', { 'id': entity.id }) }}">{{ entity.id }}</a></td>
+                <td>{{ entity.category }}</td>
+                <td>{% if entity.createDate %}{{ entity.createDate|date('d.m.Y H:i:s') }}{% endif %}</td>
+                <td>{% if entity.runDate %}{{ entity.runDate|date('d.m.Y H:i:s') }}{% endif %}</td>
+                <td>{{ entity.statusString }}</td>
+                <td>{{ entity.progressStatusStr }}</td>
+                <td>
+                <ul>
+                    <li>
+                        <a href="{{ path('task_show', { 'id': entity.id }) }}">Просмотр</a>
+                    </li>
+                    <li>
+                        <a href="{{ path('task_edit', { 'id': entity.id }) }}">Редактировать</a>
+                    </li>
+                </ul>
+                </td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+        <ul>
+        <li>
+            <a href="{{ path('task_new') }}">
+                Создать новую задачу
+            </a>
+        </li>
+    </ul>
+    {% endblock %}

@@ -1,0 +1,42 @@
+Avkdev\YmParserBundle\Entity\Task:
+    type: entity
+    table: task
+    repositoryClass: Avkdev\YmParserBundle\Entity\TaskRepository
+    id:
+        id:
+            type: integer
+            id: true
+            generator:
+                strategy: AUTO
+    fields:
+        categoryId:
+            type: integer
+            column: category_id
+        createDate:
+            type: datetime
+            column: create_date
+        runDate:
+            type: datetime
+            column: run_date
+        isRepeat:
+            type: boolean
+            column: is_repeat
+            options:
+                default: false
+        status:
+            type: smallint
+            options:
+                default: 0
+        progressStatus:
+            type: json_array
+            column: progress_status
+            nullable: true
+    manyToOne:
+        category:
+            targetEntity: Category
+            inversedBy: tasks
+            joinColumn:
+                name: category_id
+                referencedColumnName: id
+    lifecycleCallbacks:
+        prePersist: [ setCreateDateValue, setStatusValue ]
