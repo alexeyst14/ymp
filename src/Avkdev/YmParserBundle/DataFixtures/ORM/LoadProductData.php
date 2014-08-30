@@ -27,7 +27,7 @@ class LoadProductData extends AbstractFixture implements OrderedFixtureInterface
                 ->setName("Garmin nuvi 150LMT")
                 ->setRetail(2560 + $i * 10)
                 ->setCategory($manager->merge($this->getReference('cat1')))
-                ->setYandexModelId('5345435435' . $i)
+                ->setYandexModelId(45435435 + $i)
                 ->setUrlOriginal("http://market.yandex.ua/model.xml?modelid=8512100&hid=294661")
                 ->setUrlPhoto("http://mdata.yandex.net/i?path=b0922125700_img_id336785696886444143.jpeg");
             $manager->persist($product);

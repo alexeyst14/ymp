@@ -15,6 +15,7 @@ Avkdev\YmParserBundle\Entity\Product:
         yandexModelId:
             type: integer
             column: yandex_model_id
+            unique: true
         name:
             type: string
             length: 255

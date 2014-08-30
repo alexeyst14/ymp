@@ -11,6 +11,7 @@ namespace Avkdev\YmParserBundle\Parser;
 use Avkdev\YmParserBundle\Entity\Task;
 use Doctrine\ORM\EntityManager;
 use Symfony\Component\DependencyInjection\ContainerAware;
+use Symfony\Component\Security\Acl\Exception\Exception;
 
 abstract class AbstractParser extends ContainerAware
 {
@@ -29,6 +30,9 @@ abstract class AbstractParser extends ContainerAware
      */
     protected $numPage = 1;
 
+    /**
+     * Run parser
+     */
     public function run()
     {
         $this->em = $this->container->get('doctrine.orm.entity_manager');
@@ -41,8 +45,12 @@ abstract class AbstractParser extends ContainerAware
         foreach ($tasks as $task) {
             $this->task = $task;
             $this->persistStatus(Task::STATUS_PROCESSING);
-
-            $this->parse();
+            try {
+                $this->parse();
+                $this->persistStatus(Task::STATUS_DONE);
+            } catch(Exception $e) {
+                $this->persistStatus(Task::STATUS_ERROR);
+            }
         }
     }
 
@@ -57,5 +65,31 @@ abstract class AbstractParser extends ContainerAware
 //        $this->em->flush();
     }
 
+    protected function setNumPage($num)
+    {
+        $this->numPage = $num;
+        return $this;
+    }
+
+    /**
+     * Calculate page offset for load a specified page
+     * @param $numPage
+     * @return int
+     */
+    protected function buildPageOffset($numPage)
+    {
+        return $numPage;
+    }
+
+    /**
+     * Build url for creating request
+     * @return string
+     */
+    abstract protected function buildUrl();
+
+    /**
+     * @return mixed
+     */
+    abstract public function parse();
 
 }
