@@ -23,9 +23,11 @@ Avkdev\YmParserBundle\Entity\Product:
             type: decimal
             precision: 10
             scale: 2
+            nullable: true
         currency:
             type: string
-            length: 3
+            length: 20
+            nullable: true
         descr:
             type: text
         urlOriginal:

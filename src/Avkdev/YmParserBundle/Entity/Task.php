@@ -300,4 +300,13 @@ class Task
     {
         return '#' . $this->getId()  . ' | ' . $this->getCategory()->getName();
     }
+
+    /**
+     * @ORM\PrePersist
+     */
+    public function setIsRepeatValue()
+    {
+        $this->setIsRepeat(0);
+        return $this;
+    }
 }

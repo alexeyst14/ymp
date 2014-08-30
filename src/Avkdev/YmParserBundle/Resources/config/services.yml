@@ -14,6 +14,13 @@ services:
         arguments:
             - Avkdev\YmParserBundle\Entity\Task
 
+    avkdev_ym_parser.product_repository:
+        class: Doctrine\ORM\EntityRepository
+        factory_service: doctrine.orm.entity_manager
+        factory_method: getRepository
+        arguments:
+            - Avkdev\YmParserBundle\Entity\Product
+
     avkdev_ym_parser.ymparser:
         class: Avkdev\YmParserBundle\Parser\YandexMarket
         calls:

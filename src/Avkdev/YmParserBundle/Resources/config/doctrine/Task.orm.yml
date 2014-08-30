@@ -22,7 +22,7 @@ Avkdev\YmParserBundle\Entity\Task:
             type: boolean
             column: is_repeat
             options:
-                default: false
+                default: 0
         status:
             type: smallint
             options:
@@ -39,4 +39,4 @@ Avkdev\YmParserBundle\Entity\Task:
                 name: category_id
                 referencedColumnName: id
     lifecycleCallbacks:
-        prePersist: [ setCreateDateValue, setStatusValue ]
+        prePersist: [ setCreateDateValue, setStatusValue, setIsRepeatValue ]

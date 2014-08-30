@@ -16,7 +16,7 @@ use Symfony\Component\Security\Acl\Exception\Exception;
 abstract class AbstractParser extends ContainerAware
 {
     /**
-     * @var \Avkdev\YmParserBundle\Entity\Task
+     * @var Task
      */
     protected $task;
 
@@ -60,7 +60,7 @@ abstract class AbstractParser extends ContainerAware
      */
     public function persistStatus($status)
     {
-        $this->task->setStatus($status);
+//        $this->task->setStatus($status);
 //        $this->em->persist($this->task);
 //        $this->em->flush();
     }
@@ -92,4 +92,32 @@ abstract class AbstractParser extends ContainerAware
      */
     abstract public function parse();
 
+
+    /**
+     * @param array $entities
+     */
+    protected function persistProducts(array $entities)
+    {
+        // check existense into DB
+        $ids = array_flip(array_map(
+            function ($e) {
+                return $e->getYandexModelId();
+            },
+            $entities));
+
+        /** @var $repo ProductRepository */
+        $res = $this->container->get('avkdev_ym_parser.product_repository')->findByYandexModelId(array_keys($ids));
+        foreach ($res as $i) {
+            unset($ids[$i->getYandexModelId()]);
+        }
+
+        /** @var $entity Product */
+        foreach ($entities as $entity) {
+            if (!array_key_exists($entity->getYandexModelId(), $ids)) {
+                continue;
+            }
+            $this->em->persist($entity);
+        }
+        $this->em->flush();
+    }
 }

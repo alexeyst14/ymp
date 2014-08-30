@@ -9,6 +9,7 @@
 namespace Avkdev\YmParserBundle\Parser;
 
 use Avkdev\YmParserBundle\Entity\Product;
+use Avkdev\YmParserBundle\Entity\ProductRepository;
 use Avkdev\YmParserBundle\Parser\AbstractParser;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -22,24 +23,20 @@ class YandexMarket extends AbstractParser
     {
         $num = $this->container->getParameter('ymparser_num_pages');
         // start parsing
-        for ($i = 2; $i <= $num; $i++) {
+        for ($i = 1; $i <= $num; $i++) {
             $this->setNumPage($i);
             $url = $this->buildUrl();
 
-            echo "$url\n";
             $browser = $this->container->get('buzz.browser');
             $entities = $this->makeOutHtml($browser->get($url, $this->getHeaders()));
             $this->persistProducts($entities);
-
-
-            die();
             sleep(3);
         }
-
     }
 
     /**
      * @param $response \Buzz\Message\Response
+     * @return array of Product entities
      */
     protected function makeOutHtml($response)
     {
@@ -126,10 +123,5 @@ class YandexMarket extends AbstractParser
         );
     }
 
-
-    protected function persistProducts(array $entities)
-    {
-
-    }
 
 }

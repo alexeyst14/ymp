@@ -2,6 +2,7 @@
 
 namespace Avkdev\YmParserBundle\Entity;
 
+use Doctrine\Common\Collections\Criteria;
 use Doctrine\ORM\EntityRepository;
 
 /**
@@ -12,4 +13,10 @@ use Doctrine\ORM\EntityRepository;
  */
 class ProductRepository extends EntityRepository
 {
+    public function findByYandexModelId(array $ids)
+    {
+        $criteria = Criteria::create()
+            ->where(Criteria::expr()->in('yandexModelId', $ids));
+        return $this->matching($criteria);
+    }
 }
