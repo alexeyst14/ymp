@@ -9,34 +9,11 @@
 namespace Avkdev\YmParserBundle\Parser;
 
 use Avkdev\YmParserBundle\Entity\Product;
-use Avkdev\YmParserBundle\Entity\ProductRepository;
-use Avkdev\YmParserBundle\Parser\AbstractParser;
-use Symfony\Component\HttpFoundation\Request;
 
 class YandexMarket extends AbstractParser
 {
-
     /**
-     * {@inherit}
-     */
-    public function parse()
-    {
-        $num = $this->container->getParameter('ymparser_num_pages');
-        // start parsing
-        for ($i = 1; $i <= $num; $i++) {
-            $this->setNumPage($i);
-            $url = $this->buildUrl();
-
-            $browser = $this->container->get('buzz.browser');
-            $entities = $this->makeOutHtml($browser->get($url, $this->getHeaders()));
-            $this->persistProducts($entities);
-            sleep(3);
-        }
-    }
-
-    /**
-     * @param $response \Buzz\Message\Response
-     * @return array of Product entities
+     * {@inheritdoc}
      */
     protected function makeOutHtml($response)
     {
@@ -85,23 +62,22 @@ class YandexMarket extends AbstractParser
             $entities[$i]->setRetail((double)trim($childs->item(0)->nodeValue));
             $entities[$i]->setCurrency(trim($childs->item(1)->nodeValue));
         }
-
         return $entities;
     }
 
     /**
-     * {@inherit}
+     * {@inheritdoc}
      */
     protected function buildUrl()
     {
         $yandexCatId = $this->task->getCategory()->getYandexCatId();
         $pattern = "CMD=-RR=0,0,0,0-VIS=270-CAT_ID=%d-BPOS=%d";
         return "http://market.yandex.ua/guru.xml?" .
-            sprintf($pattern, $yandexCatId, $this->buildPageOffset($this->numPage));
+            sprintf($pattern, $yandexCatId, $this->buildPageOffset($this->getNumPage()));
     }
 
     /**
-     * {@inherit}
+     * {@inheritdoc}
      */
     protected function buildPageOffset($numPage)
     {
@@ -109,7 +85,7 @@ class YandexMarket extends AbstractParser
     }
 
     /**
-     * @return array
+     * {@inheritdoc}
      */
     protected function getHeaders()
     {
@@ -123,5 +99,27 @@ class YandexMarket extends AbstractParser
         );
     }
 
+    /**
+     * {@inheritdoc}
+     */
+    protected function persistProducts(array $entities)
+    {
+        // check existense into DB
+        $ids = array_flip(array_map(function ($e) { return $e->getYandexModelId();}, $entities));
 
+        /** @var $repo ProductRepository */
+        $res = $this->container->get('avkdev_ym_parser.product_repository')->findByYandexModelId(array_keys($ids));
+        foreach ($res as $i) {
+            unset($ids[$i->getYandexModelId()]);
+        }
+
+        /** @var $entity Product */
+        foreach ($entities as $entity) {
+            if (!array_key_exists($entity->getYandexModelId(), $ids)) {
+                continue;
+            }
+            $this->em->persist($entity);
+        }
+        $this->em->flush();
+    }
 }

@@ -26,6 +26,7 @@ class ParseCommand extends ContainerAwareCommand
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $parser = $this->getContainer()->get('avkdev_ym_parser.ymparser');
+        $parser->setOutput($output);
         $parser->run();
     }
 

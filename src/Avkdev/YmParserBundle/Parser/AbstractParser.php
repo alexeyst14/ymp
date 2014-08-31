@@ -12,6 +12,7 @@ use Avkdev\YmParserBundle\Entity\Task;
 use Doctrine\ORM\EntityManager;
 use Symfony\Component\DependencyInjection\ContainerAware;
 use Symfony\Component\Security\Acl\Exception\Exception;
+use Symfony\Component\Console\Output\OutputInterface;
 
 abstract class AbstractParser extends ContainerAware
 {
@@ -26,9 +27,16 @@ abstract class AbstractParser extends ContainerAware
     protected $em;
 
     /**
-     * @var int
+     * @var array
      */
-    protected $numPage = 1;
+    protected $progressStatus = array(
+        'numPage' => 1
+    );
+
+    /**
+     * @var OutputInterface
+     */
+    protected $output;
 
     /**
      * Run parser
@@ -39,35 +47,145 @@ abstract class AbstractParser extends ContainerAware
         /** @var $tasks \Doctrine\Common\Collections\ArrayCollection */
         $tasks = $this->container->get('avkdev_ym_parser.task_repository')->getUnresolvedTasks();
 
-        echo "Num tasks: " . $tasks->count() . "\n";
+        $this->output->writeln("Num tasks: " . $tasks->count());
 
         /** @var $task \Avkdev\YmParserBundle\Entity\Task */
         foreach ($tasks as $task) {
             $this->task = $task;
             $this->persistStatus(Task::STATUS_PROCESSING);
             try {
+                $this->loadProgressStatus();
                 $this->parse();
                 $this->persistStatus(Task::STATUS_DONE);
-            } catch(Exception $e) {
+            } catch (Exception $e) {
                 $this->persistStatus(Task::STATUS_ERROR);
             }
         }
+        return $this;
     }
 
     /**
      * Save task status
-     * @param $status integer
+     * @param $status
+     * @return $this
      */
     public function persistStatus($status)
     {
-//        $this->task->setStatus($status);
-//        $this->em->persist($this->task);
-//        $this->em->flush();
+        $this->task->setStatus($status);
+        $this->em->persist($this->task);
+        $this->em->flush();
+        return $this;
     }
 
+    /**
+     * Load progress status for task
+     * @return $this
+     */
+    protected function loadProgressStatus()
+    {
+        $this->progressStatus = $this->task->getProgressStatus();
+        if (empty($this->progressStatus)) {
+            $this->progressStatus = array(
+                'numPage' => 1
+            );
+        }
+        return $this;
+    }
+
+    /**
+     * main parser method
+     * @return $this
+     */
+    protected function parse()
+    {
+        $maxNumPages = $this->container->getParameter('ymparser_num_pages');
+        $sleepTime = $this->container->getParameter('ymparser_sleep_time');
+        // start parsing
+        for ($i = $this->getNumPage(); $i <= $maxNumPages; $i++) {
+            $this->setNumPage($i);
+            $this->parsePage();
+            sleep($sleepTime);
+        }
+        return $this;
+    }
+
+    /**
+     * @return int
+     */
+    protected function getNumPage()
+    {
+        return $this->progressStatus['numPage'];
+    }
+
+    /**
+     * @param $num integer
+     * @return $this
+     */
     protected function setNumPage($num)
     {
-        $this->numPage = $num;
+        $this->progressStatus['numPage'] = $num;
+        return $this;
+    }
+
+    /**
+     * Parse current page
+     * @return $this
+     */
+    protected function parsePage()
+    {
+        $this->saveProgressStatus();
+        $url = $this->buildUrl();
+        $this->output->writeln("Parsing page {$this->getNumPage()}: $url");
+        $browser = $this->container->get('buzz.browser');
+        $entities = $this->makeOutHtml($browser->get($url, $this->getHeaders()));
+        $this->persistProducts($entities);
+        return $this;
+    }
+
+    /**
+     * Save current task state
+     * @return $this
+     */
+    protected function saveProgressStatus()
+    {
+        $this->task->setProgressStatus($this->progressStatus);
+        $this->em->persist($this->task);
+        $this->em->flush();
+        return $this;
+    }
+
+    /**
+     * Build url for creating request
+     * @return string
+     */
+    abstract protected function buildUrl();
+
+    /**
+     * @param $response \Buzz\Message\Response
+     * @return mixed
+     */
+    abstract protected function makeOutHtml($response);
+
+    /**
+     * @return array
+     */
+    protected function getHeaders()
+    {
+        return array();
+    }
+
+    /**
+     * @param array $entities
+     */
+    abstract protected function persistProducts(array $entities);
+
+    /**
+     * @param OutputInterface $output
+     * @return $this
+     */
+    public function setOutput(OutputInterface $output)
+    {
+        $this->output = $output;
         return $this;
     }
 
@@ -79,45 +197,5 @@ abstract class AbstractParser extends ContainerAware
     protected function buildPageOffset($numPage)
     {
         return $numPage;
-    }
-
-    /**
-     * Build url for creating request
-     * @return string
-     */
-    abstract protected function buildUrl();
-
-    /**
-     * @return mixed
-     */
-    abstract public function parse();
-
-
-    /**
-     * @param array $entities
-     */
-    protected function persistProducts(array $entities)
-    {
-        // check existense into DB
-        $ids = array_flip(array_map(
-            function ($e) {
-                return $e->getYandexModelId();
-            },
-            $entities));
-
-        /** @var $repo ProductRepository */
-        $res = $this->container->get('avkdev_ym_parser.product_repository')->findByYandexModelId(array_keys($ids));
-        foreach ($res as $i) {
-            unset($ids[$i->getYandexModelId()]);
-        }
-
-        /** @var $entity Product */
-        foreach ($entities as $entity) {
-            if (!array_key_exists($entity->getYandexModelId(), $ids)) {
-                continue;
-            }
-            $this->em->persist($entity);
-        }
-        $this->em->flush();
     }
 }

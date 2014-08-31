@@ -19,3 +19,4 @@ parameters:
     use_assetic_controller: true
 
     ymparser_num_pages: 3
+    ymparser_sleep_time: 3
