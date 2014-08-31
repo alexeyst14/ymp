@@ -16,13 +16,16 @@
 
 <section id="wrapper">
     <header id="header">
+        <div id="logo">
+            <h1>YANDEX MARKET PARSER</h1>
+        </div>
+
         <div class="top">
             {% block navigation %}
                 <nav>
                     <ul class="navigation">
-                        <li><a href="{{ path('avkdev_ym_parser_homepage') }}">Главная</a></li>
+                        <li><a href="{{ path('avkdev_ym_parser_homepage') }}">Товары</a></li>
                         <li><a href="{{ path('task') }}">Задачи</a></li>
-                        <li><a href="#">Contact</a></li>
                     </ul>
                 </nav>
             {% endblock %}

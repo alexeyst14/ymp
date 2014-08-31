@@ -12,6 +12,7 @@ use Avkdev\YmParserBundle\Entity\Product;
 
 class YandexMarket extends AbstractParser
 {
+    const BASE_URL = 'http://market.yandex.ua';
     /**
      * {@inheritdoc}
      */
@@ -32,15 +33,19 @@ class YandexMarket extends AbstractParser
             $product->setYandexModelId($node->getAttribute('id'));
 
             // parse <a> tag
-            $tag = $node->getElementsByTagName('a')->item(1);
-            $product->setUrlOriginal($tag->attributes->getNamedItem('href')->nodeValue);
-            $product->setName($tag->nodeValue);
+            /** @var $item \DOMElement */
+            foreach ($node->getElementsByTagName('a') as $item) {
+                if ($item->getAttribute('class') != 'b-offers__name') {
+                    continue;
+                }
+                $product->setUrlOriginal(self::BASE_URL . $item->attributes->getNamedItem('href')->nodeValue);
+                $product->setName($item->nodeValue);
+                break;
+            }
 
             // parse <img> tag
             $product->setUrlPhoto(
-                $node->getElementsByTagName('img')
-                ->item(0)->attributes
-                ->getNamedItem('src')->nodeValue
+                $node->getElementsByTagName('img')->item(0)->attributes->getNamedItem('src')->nodeValue
             );
 
             // parse <p> tag
@@ -49,7 +54,7 @@ class YandexMarket extends AbstractParser
         }
 
         // parse retail and currency
-        $nodes = $xpath->query('//span[starts-with(@class,"b-prices")]');
+        $nodes = $xpath->query('//span[starts-with(@class,"b-prices ")]');
         $i = -1;
         /** @var $node \DOMElement */
         foreach ($nodes as $node) {
@@ -58,9 +63,11 @@ class YandexMarket extends AbstractParser
             if ($childs->length == 0) {
                 continue;
             }
-            /** @var $childNode \DOMElement */
-            $entities[$i]->setRetail((double)trim($childs->item(0)->nodeValue));
-            $entities[$i]->setCurrency(trim($childs->item(1)->nodeValue));
+            $retail = (double)trim($childs->item(0)->nodeValue);
+            $currency = trim($childs->item(1)->nodeValue);
+            //$this->output->writeln("$i. $retail $currency");
+            $entities[$i]->setRetail($retail);
+            $entities[$i]->setCurrency($currency);
         }
         return $entities;
     }
@@ -71,8 +78,8 @@ class YandexMarket extends AbstractParser
     protected function buildUrl()
     {
         $yandexCatId = $this->task->getCategory()->getYandexCatId();
-        $pattern = "CMD=-RR=0,0,0,0-VIS=270-CAT_ID=%d-BPOS=%d";
-        return "http://market.yandex.ua/guru.xml?" .
+        $pattern = "CMD=-RR=0,0,0,0-VIS=8470-CAT_ID=%d-BPOS=%d";
+        return self::BASE_URL . "/guru.xml?" .
             sprintf($pattern, $yandexCatId, $this->buildPageOffset($this->getNumPage()));
     }
 

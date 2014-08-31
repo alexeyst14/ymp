@@ -11,7 +11,6 @@
                 <th>Дата создания</th>
                 <th>Время запуска</th>
                 <th>Статус</th>
-                <th>Тех. информация</th>
                 <th>Действия</th>
             </tr>
         </thead>
@@ -23,7 +22,6 @@
                 <td>{% if entity.createDate %}{{ entity.createDate|date('d.m.Y H:i:s') }}{% endif %}</td>
                 <td>{% if entity.runDate %}{{ entity.runDate|date('d.m.Y H:i:s') }}{% endif %}</td>
                 <td>{{ entity.statusString }}</td>
-                <td>{{ entity.progressStatusStr }}</td>
                 <td>
                 <ul>
                     <li>

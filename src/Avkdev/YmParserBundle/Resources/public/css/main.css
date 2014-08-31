@@ -27,6 +27,17 @@ body { line-height: 1;font-family: Arial, Helvetica, sans-serif;font-size: 12px;
 
 #footer { border-top: 1px solid #ccc; clear: both; text-align: center; padding: 10px; color: #aaa; }
 
+#logo {
+    float: left;
+    margin-top: 2pt;
+}
+#logo h1 {
+    color: #6b9311;
+    font-weight: bold;
+    font-size: 18pt;
+    font-family: "Helvetica Neue", Helvetica, Verdana;
+}
+
 table.products {
     border-collapse: collapse;
 }

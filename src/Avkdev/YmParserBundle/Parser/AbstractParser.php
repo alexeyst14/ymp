@@ -155,29 +155,12 @@ abstract class AbstractParser extends ContainerAware
     }
 
     /**
-     * Build url for creating request
-     * @return string
-     */
-    abstract protected function buildUrl();
-
-    /**
-     * @param $response \Buzz\Message\Response
-     * @return mixed
-     */
-    abstract protected function makeOutHtml($response);
-
-    /**
      * @return array
      */
     protected function getHeaders()
     {
         return array();
     }
-
-    /**
-     * @param array $entities
-     */
-    abstract protected function persistProducts(array $entities);
 
     /**
      * @param OutputInterface $output
@@ -198,4 +181,22 @@ abstract class AbstractParser extends ContainerAware
     {
         return $numPage;
     }
+
+    /**
+     * Build url for creating request
+     * @return string
+     */
+    abstract protected function buildUrl();
+
+    /**
+     * Parse HTML and fetch data to entities array
+     * @param $response \Buzz\Message\Response
+     * @return mixed
+     */
+    abstract protected function makeOutHtml($response);
+
+    /**
+     * @param array $entities
+     */
+    abstract protected function persistProducts(array $entities);
 }
